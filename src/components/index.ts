@@ -1,0 +1,5 @@
+export { Header } from './Header/Header.tsx'
+export { NewsBanner } from './NewsBanner/NewsBanner.tsx'
+export { Image } from './Image/Image.tsx'
+export { NewsList } from './NewsList/NewsList.tsx'
+export { NewsItem } from './NewsItem/NewsItem.tsx'
