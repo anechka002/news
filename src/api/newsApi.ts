@@ -1,22 +1,39 @@
-import { BaseResponse } from "@/types";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { baseApi } from "@/app/baseApi";
+import { CategoriesApiResponse, NewsApiResponse, ParamsType } from "@/types";
 
-const BASE_URL = import.meta.env.VITE_NEWS_BASE_API_URL;
 const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
 
-export const newsApi = createApi({
-  reducerPath: "newsApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: BASE_URL,
-  }),
-  tagTypes: ["News"],
+export const newsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getNews: builder.query<BaseResponse, void>({
-      query: () => `/latest-news?apiKey=${API_KEY}`,
-      providesTags: ["News"],
+    getNews: builder.query<NewsApiResponse, ParamsType>({
+      query: (params) => {
+        const {
+          page_number = 1,
+          page_size = 10,
+          category,
+          keywords,
+        } = params || {};
+        return {
+          url: `/search?apiKey=${API_KEY}`,
+          params: {
+            page_number,
+            page_size,
+            category,
+            keywords,
+          },
+        }
+      },
+      // providesTags: ["News"],
     }),
-    
+    getLatestNews: builder.query<NewsApiResponse, void>({
+      query: () => `/latest-news?apiKey=${API_KEY}`,
+      // providesTags: ["News"],
+    }),
+    getCategories: builder.query<CategoriesApiResponse, void>({
+      query: () => `/available/categories?apiKey=${API_KEY}`,
+      // providesTags: ["News"],
+    }), 
   })
 })
 
-export const { useGetNewsQuery } = newsApi;
+export const { useGetNewsQuery, useGetLatestNewsQuery, useGetCategoriesQuery} = newsApi;  // eslint-disable-line @typescript-eslint/no-unused
